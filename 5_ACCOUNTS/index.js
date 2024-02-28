@@ -26,6 +26,13 @@ function operation() {
       const action = answer['action']
       if (action === 'Criar Conta') {
         createAccount()
+      } else if (action === 'Depositar') {
+        deposit()
+      } else if (action === 'Consultar conta') {
+      } else if (action === 'Sacar') {
+      } else if (action === 'Sair') {
+        console.log(chalk.bgBlue.black('Obrigado por usar o ACCOUNT!'))
+        process.exit()
       }
     })
     .catch((err) => {
@@ -40,6 +47,7 @@ function createAccount() {
   console.log(chalk.green('Defina as opções da sua conta a seguir'))
 
   buildingAccount()
+  return
 }
 // construindo criar a conta
 
@@ -71,10 +79,39 @@ function buildingAccount() {
         '{"balance":0}',
         function (err) {
           console.log(err)
-        },
+        }
       )
-      console.log(chalk.green("Parabéns a sua conta foi criada"))
+      console.log(chalk.green('Parabéns a sua conta foi criada'))
       operation()
     })
     .catch((err) => console.log(err))
+}
+
+// Adicionar montante do usuario
+
+function deposit() {
+  inquirer
+    .prompt([
+      {
+        name: 'accountname',
+        message: 'Qual o nome da sua conta',
+      },
+    ])
+    .then((answer) => {
+      const accountname = answer['accountname']
+      // valida se a conta existe
+      if (!checkAccount(accountname)) {
+        return deposit()
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+}
+function checkAccount(accountname) {
+  if (!fs.existsSync(`accounts/${accountname}.json`)) {
+    console.log(chalk.bgRed.black('Esta conta não existe, escolha outro nome'))
+    return false
+  }
+  return true
 }
