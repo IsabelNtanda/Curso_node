@@ -103,6 +103,21 @@ function deposit() {
       if (!checkAccount(accountname)) {
         return deposit()
       }
+      inquirer
+        .prompt([
+          {
+            name: 'amount',
+            message: 'Quanto voce deseja depositar',
+          },
+        ])
+        .then((answer) => {
+          const amount = answer['amount']
+
+          // add an amount
+          addAmount(accountname,amount)
+          operation()
+        })
+        .catch((err) => console.log(err))
     })
     .catch((err) => {
       console.log(err)
@@ -114,4 +129,19 @@ function checkAccount(accountname) {
     return false
   }
   return true
+}
+
+function addAmount(accountname,amount) {
+const account = getAccount(accountname)
+
+console.log(account)
+
+
+}
+
+function getAccount(accountname) {
+  const accountJson = fs.readFileSync(`accounts/${accountname}.json`, {encoding: 'utf8', flag: 'r',
+  })
+
+  return JSON.parse(accountJson)
 }
